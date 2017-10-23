@@ -59,7 +59,7 @@ FriendlyChat.prototype.initFirebase = function() {
   this.auth = firebase.auth();
   this.database = firebase.database();
   this.storage = firebase.storage();
-  // Initiates Firebase auth and listen to auth state changes
+  // Initiates Firebase auth and listen to auth state changes.
   this.auth.onAuthStateChanged(this.onAuthStateChanged.bind(this));
 };
 
@@ -84,17 +84,33 @@ FriendlyChat.prototype.saveMessage = function(e) {
   e.preventDefault();
   // Check that the user entered a message and is signed in.
   if (this.messageInput.value && this.checkSignedInWithMessage()) {
-
-    // TODO(DEVELOPER): push new message to Firebase.
-
+    var currentUser = this.auth.currentUser;
+    // Add a new message entry to the Firebase Database.
+    this.messagesRef.push({
+      name: currentUser.displayName,
+      text: this.messageInput.value,
+      photoUrl: currentUser.photoURL || '/images/profile_placeholder.png'
+    }).then(function() {
+      // Clear message text field and SEND button state.
+      FriendlyChat.resetMaterialTextfield(this.messageInput);
+      this.toggleButton();
+    }.bind(this)).catch(function(error) {
+      console.error('Error writing new message to Firebase Database', error);
+    });
   }
 };
 
-// Sets the URL of the given img element with the URL of the image stored in Cloud Storage.
+// Sets the URL of the given img element with the URL of the image stored in Firebase Storage.
 FriendlyChat.prototype.setImageUrl = function(imageUri, imgElement) {
-  imgElement.src = imageUri;
-
-  // TODO(DEVELOPER): If image is on Cloud Storage, fetch image URL and set img element's src.
+  // If the image is a Firebase Storage URI we fetch the URL.
+  if (imageUri.startsWith('gs://')) {
+    imgElement.src = FriendlyChat.LOADING_IMAGE_URL; // Display a loading image first.
+    this.storage.refFromURL(imageUri).getMetadata().then(function(metadata) {
+      imgElement.src = metadata.downloadURLs[0];
+    });
+  } else {
+    imgElement.src = imageUri;
+  }
 };
 
 // Saves a new message containing an image URI in Firebase.
@@ -106,21 +122,30 @@ FriendlyChat.prototype.saveImageMessage = function(event) {
   // Clear the selection in the file picker input.
   this.imageForm.reset();
 
-  // Check if the file is an image.
-  if (!file.type.match('image.*')) {
-    var data = {
-      message: 'You can only share images',
-      timeout: 2000
-    };
-    this.signInSnackbar.MaterialSnackbar.showSnackbar(data);
-    return;
-  }
   // Check if the user is signed-in
   if (this.checkSignedInWithMessage()) {
-    // Return true if the user is signed in Firebase
-    if(this.auth.currentUser) {
-      return true;
-    }
+
+    // We add a message with a loading icon that will get updated with the shared image.
+    var currentUser = this.auth.currentUser;
+    this.messagesRef.push({
+      name: currentUser.displayName,
+      imageUrl: FriendlyChat.LOADING_IMAGE_URL,
+      photoUrl: currentUser.photoURL || '/images/profile_placeholder.png'
+    }).then(function(data) {
+
+      // Upload the image to Firebase Storage.
+      var uploadTask = this.storage.ref(currentUser.uid + '/' + Date.now() + '/' + file.name)
+          .put(file, {'contentType': file.type});
+      // Listen for upload completion.
+      uploadTask.on('state_changed', null, function(error) {
+        console.error('There was an error uploading a file to Firebase Storage:', error);
+      }, function() {
+
+        // Get the file's Storage URI and update the chat message placeholder.
+        var filePath = uploadTask.snapshot.metadata.fullPath;
+        data.update({imageUrl: this.storage.ref(filePath).toString()});
+      }.bind(this));
+    }.bind(this));
   }
 };
 
