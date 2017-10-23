@@ -1,0 +1,28 @@
+[debug] [2017-10-23T09:13:53.984Z] ----------------------------------------------------------------------
+[debug] [2017-10-23T09:13:53.986Z] Command:       /Users/shyamada/.nodenv/versions/6.0.0/bin/node /usr/local/bin/firebase serve
+[debug] [2017-10-23T09:13:53.987Z] CLI Version:   3.13.1
+[debug] [2017-10-23T09:13:53.987Z] Platform:      darwin
+[debug] [2017-10-23T09:13:53.987Z] Node Version:  v6.0.0
+[debug] [2017-10-23T09:13:53.987Z] Time:          Mon Oct 23 2017 18:13:53 GMT+0900 (JST)
+[debug] [2017-10-23T09:13:53.987Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2017-10-23T09:13:54.002Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2017-10-23T09:13:54.002Z] > authorizing via signed-in user
+[debug] [2017-10-23T09:13:54.004Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/friendlychat-4db27  
+ Mon Oct 23 2017 18:13:54 GMT+0900 (JST)
+[debug] [2017-10-23T09:13:54.742Z] <<< HTTP RESPONSE 200
+[debug] [2017-10-23T09:13:54.744Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/database/friendlychat-4db27/tokens  
+ Mon Oct 23 2017 18:13:54 GMT+0900 (JST)
+[debug] [2017-10-23T09:13:55.855Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Serving from '/Users/shyamada/workspace/_test/friendlychat/web-start'...
+[info] 
+[debug] [2017-10-23T09:13:55.860Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/friendlychat-4db27  
+ Mon Oct 23 2017 18:13:55 GMT+0900 (JST)
+[debug] [2017-10-23T09:13:56.693Z] <<< HTTP RESPONSE 200
+[debug] [2017-10-23T09:13:56.694Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/438979647211/clients/_:getWebAppConfig  
+ Mon Oct 23 2017 18:13:56 GMT+0900 (JST)
+[debug] [2017-10-23T09:13:57.364Z] <<< HTTP RESPONSE 200
+[info] i  hosting: Serving hosting files from: ./
+[info] ✔  hosting: Local server: http://localhost:5000
+

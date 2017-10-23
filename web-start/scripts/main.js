@@ -60,7 +60,7 @@ FriendlyChat.prototype.initFirebase = function() {
   this.database = firebase.database();
   this.storage = firebase.storage();
   // Initiates Firebase auth and listen to auth state changes
-  this.auth.onAuthStateChanged(this.AuthStateChanged.bind(this));
+  this.auth.onAuthStateChanged(this.onAuthStateChanged.bind(this));
 };
 
 // Loads chat messages history and listens for upcoming ones.
